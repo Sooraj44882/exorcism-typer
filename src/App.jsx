@@ -1,26 +1,70 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { sanskritLines, latinLines } from "./words";
 
 export default function App() {
   const [language, setLanguage] = useState("");
   const [currentItem, setCurrentItem] = useState(null);
+  const [typedCount, setTypedCount] = useState(0);
 
   function pickLanguage(lang) {
     setLanguage(lang);
     const list = lang === "sanskrit" ? sanskritLines : latinLines;
     const randomIndex = Math.floor(Math.random() * list.length);
     setCurrentItem(list[randomIndex]);
+    setTypedCount(0);
   }
+
+  useEffect(() => {
+    if (!currentItem) return;
+    if (typedCount >= currentItem.line.length) return;
+
+    function handleKey(e) {
+      if (e.key.length !== 1) return;
+
+      const nextLetter = currentItem.line[typedCount];
+      if (e.key === nextLetter) {
+        const newCount = typedCount + 1;
+        setTypedCount(newCount);
+
+        if (newCount === currentItem.line.length) {
+          setTimeout(() => {
+            pickLanguage(language);
+          }, 200);
+        }
+      }
+    }
+
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [currentItem, typedCount, language]);
+
+  const pageStyle = {
+    backgroundColor: "#050505",
+    color: "#ffffff",
+    minHeight: "100vh",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "16px",
+    padding: "16px",
+  };
 
   if (language === "") {
     return (
-      <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center gap-4">
+      <div style={pageStyle}>
         <h1>Choose Language</h1>
-        <div className="flex gap-4">
-          <button onClick={() => pickLanguage("sanskrit")} className="border px-4 py-2">
+        <div style={{ display: "flex", gap: "16px" }}>
+          <button
+            onClick={() => pickLanguage("sanskrit")}
+            style={{ border: "1px solid #555", padding: "8px 16px", background: "#111", color: "#fff", cursor: "pointer" }}
+          >
             Sanskrit
           </button>
-          <button onClick={() => pickLanguage("latin")} className="border px-4 py-2">
+          <button
+            onClick={() => pickLanguage("latin")}
+            style={{ border: "1px solid #555", padding: "8px 16px", background: "#111", color: "#fff", cursor: "pointer" }}
+          >
             Latin
           </button>
         </div>
@@ -29,18 +73,36 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center gap-4">
-      <p className="text-2xl">{currentItem.line}</p>
-      <p className="text-sm text-gray-400">{currentItem.meaning}</p>
+    <div style={pageStyle}>
+      <p style={{ fontSize: "28px", letterSpacing: "2px" }}>
+        {currentItem.line.split("").map((letter, index) => {
+          const isTyped = index < typedCount;
+          const isCurrent = index === typedCount;
 
-      <div className="flex gap-3">
-        <button onClick={() => pickLanguage(language)} className="border px-3 py-1">
-          Next
-        </button>
-        <button onClick={() => setLanguage("")} className="border px-3 py-1">
-          Back
-        </button>
-      </div>
+          return (
+            <span
+              key={index}
+              style={{
+                color: isTyped ? "#ef4444" : isCurrent ? "#facc15" : "#9ca3af",
+                backgroundColor: isCurrent ? "#450a0a" : "transparent",
+                borderBottom: isCurrent ? "3px solid #ef4444" : "none",
+                padding: "0 2px",
+              }}
+            >
+              {letter}
+            </span>
+          );
+        })}
+      </p>
+
+      <p style={{ fontSize: "14px", color: "#9ca3af" }}>{currentItem.meaning}</p>
+
+      <button
+        onClick={() => setLanguage("")}
+        style={{ border: "1px solid #555", padding: "6px 12px", background: "#111", color: "#fff", cursor: "pointer" }}
+      >
+        Back
+      </button>
     </div>
   );
 }
