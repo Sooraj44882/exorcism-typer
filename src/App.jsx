@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { sanskritLines, latinLines } from "./words";
 
 export default function App() {
@@ -6,6 +6,7 @@ export default function App() {
   const [currentItem, setCurrentItem] = useState(null);
   const [typedCount, setTypedCount] = useState(0);
   const [isJumpscare, setIsJumpscare] = useState(false);
+  const paperVideoRef = useRef(null);
 
   function pickLanguage(lang) {
     setLanguage(lang);
@@ -14,6 +15,14 @@ export default function App() {
     setCurrentItem(list[randomIndex]);
     setTypedCount(0);
     setIsJumpscare(false);
+
+    setTimeout(() => {
+  if (paperVideoRef.current) {
+    paperVideoRef.current.muted = false;
+    paperVideoRef.current.volume = 0.5;
+    paperVideoRef.current.play().catch(() => {});
+  }
+}, 50);
   }
 
   useEffect(() => {
@@ -100,28 +109,66 @@ export default function App() {
         </div>
       )}
 
-      <p style={{ fontSize: "28px", letterSpacing: "2px" }}>
-        {currentItem.line.split("").map((letter, index) => {
-          const isTyped = index < typedCount;
-          const isCurrent = index === typedCount;
+      <div
+        style={{
+          position: "relative",
+          width: "100%",
+          maxWidth: "680px",
+          minHeight: "260px",
+          overflow: "hidden",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "32px",
+          textAlign: "center",
+        }}
+      >
+        <video
+          ref={paperVideoRef}
+          src="/paper.webm"
+          autoPlay
+          loop
+          muted
+          playsInline
+          style={{
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            opacity: 0.85,
+            filter: "contrast(1.15)",
+          }}
+        />
 
-          return (
-            <span
-              key={index}
-              style={{
-                color: isTyped ? "#ef4444" : isCurrent ? "#facc15" : "#9ca3af",
-                backgroundColor: isCurrent ? "#450a0a" : "transparent",
-                borderBottom: isCurrent ? "3px solid #ef4444" : "none",
-                padding: "0 2px",
-              }}
-            >
-              {letter}
-            </span>
-          );
-        })}
-      </p>
+        <div style={{ position: "relative", zIndex: 10 }}>
+          <p style={{ fontSize: "28px", letterSpacing: "2px", fontWeight: "bold", textShadow: "0 2px 8px #000" }}>
+            {currentItem.line.split("").map((letter, index) => {
+              const isTyped = index < typedCount;
+              const isCurrent = index === typedCount;
 
-      <p style={{ fontSize: "14px", color: "#9ca3af" }}>{currentItem.meaning}</p>
+              return (
+                <span
+                  key={index}
+                  style={{
+                    color: isTyped ? "#ef4444" : isCurrent ? "#facc15" : "#ffffff",
+                    backgroundColor: isCurrent ? "rgba(69, 10, 10, 0.85)" : "transparent",
+                    borderBottom: isCurrent ? "3px solid #ef4444" : "none",
+                    padding: "0 2px",
+                  }}
+                >
+                  {letter}
+                </span>
+              );
+            })}
+          </p>
+
+          <p style={{ fontSize: "14px", color: "#e5e5e5", marginTop: "14px", textShadow: "0 2px 6px #000" }}>
+            {currentItem.meaning}
+          </p>
+        </div>
+      </div>
 
       <button
         onClick={() => setLanguage("")}
