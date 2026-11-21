@@ -17,12 +17,12 @@ export default function App() {
     setIsJumpscare(false);
 
     setTimeout(() => {
-  if (paperVideoRef.current) {
-    paperVideoRef.current.muted = false;
-    paperVideoRef.current.volume = 0.5;
-    paperVideoRef.current.play().catch(() => {});
-  }
-}, 50);
+      if (paperVideoRef.current) {
+        paperVideoRef.current.muted = false;
+        paperVideoRef.current.volume = 0.5;
+        paperVideoRef.current.play().catch(() => {});
+      }
+    }, 50);
   }
 
   useEffect(() => {
@@ -143,6 +143,19 @@ export default function App() {
         />
 
         <div style={{ position: "relative", zIndex: 10 }}>
+          {currentItem.native && (
+            <p
+              style={{
+                fontSize: "20px",
+                color: "#4260f6",
+                marginBottom: "10px",
+                letterSpacing: "1px",
+              }}
+            >
+              {currentItem.native}
+            </p>
+          )}
+
           <p style={{ fontSize: "28px", letterSpacing: "2px", fontWeight: "bold", textShadow: "0 2px 8px #000" }}>
             {currentItem.line.split("").map((letter, index) => {
               const isTyped = index < typedCount;
