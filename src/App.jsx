@@ -5,6 +5,7 @@ export default function App() {
   const [language, setLanguage] = useState("");
   const [currentItem, setCurrentItem] = useState(null);
   const [typedCount, setTypedCount] = useState(0);
+  const [isJumpscare, setIsJumpscare] = useState(false);
 
   function pickLanguage(lang) {
     setLanguage(lang);
@@ -12,6 +13,7 @@ export default function App() {
     const randomIndex = Math.floor(Math.random() * list.length);
     setCurrentItem(list[randomIndex]);
     setTypedCount(0);
+    setIsJumpscare(false);
   }
 
   useEffect(() => {
@@ -20,6 +22,7 @@ export default function App() {
 
     function handleKey(e) {
       if (e.key.length !== 1) return;
+      if (isJumpscare) return;
 
       const nextLetter = currentItem.line[typedCount];
       if (e.key === nextLetter) {
@@ -31,12 +34,17 @@ export default function App() {
             pickLanguage(language);
           }, 200);
         }
+      } else {
+        setIsJumpscare(true);
+        setTimeout(() => {
+          setIsJumpscare(false);
+        }, 500);
       }
     }
 
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
-  }, [currentItem, typedCount, language]);
+  }, [currentItem, typedCount, language, isJumpscare]);
 
   const pageStyle = {
     backgroundColor: "#050505",
@@ -74,6 +82,24 @@ export default function App() {
 
   return (
     <div style={pageStyle}>
+      {isJumpscare && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            backgroundColor: "rgba(69, 10, 10, 0.92)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 50,
+          }}
+        >
+          <div style={{ border: "3px solid #ef4444", backgroundColor: "#000", padding: "40px", textAlign: "center" }}>
+            <p style={{ color: "#ef4444", fontSize: "24px", fontWeight: "bold" }}>[ bhooo ]</p>
+          </div>
+        </div>
+      )}
+
       <p style={{ fontSize: "28px", letterSpacing: "2px" }}>
         {currentItem.line.split("").map((letter, index) => {
           const isTyped = index < typedCount;
