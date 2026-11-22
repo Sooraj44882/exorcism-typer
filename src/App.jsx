@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { sanskritLines, latinLines } from "./words";
 import ManuscriptBox from "./components/ManuscriptBox";
+import Ghost from "./components/Ghost";
 
 export default function App() {
   const [language, setLanguage] = useState("");
@@ -127,13 +128,27 @@ export default function App() {
         </div>
       )}
 
-      <ManuscriptBox
-        currentItem={currentItem}
-        lineKey={lineKey}
-        typedCount={typedCount}
-        isJumpscare={isJumpscare}
-        shouldUnmuteAudio={Boolean(language)}
-      />
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "28px",
+          width: "100%",
+          maxWidth: "1000px",
+        }}
+      >
+        <ManuscriptBox
+          currentItem={currentItem}
+          lineKey={lineKey}
+          typedCount={typedCount}
+          isJumpscare={isJumpscare}
+          shouldUnmuteAudio={Boolean(language)}
+        />
+
+        <Ghost isJumpscare={isJumpscare} hasGhostVideo={false} />
+      </div>
 
       <button
         onClick={() => setLanguage("")}
