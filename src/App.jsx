@@ -56,6 +56,9 @@ export default function App() {
 
   const pageStyle = {
     backgroundColor: "#050505",
+    backgroundImage:
+      "radial-gradient(circle at 50% 48%, rgba(88, 12, 12, 0.24) 0%, rgba(18, 6, 6, 0.65) 48%, #030303 92%)",
+    boxShadow: "inset 0 0 140px rgba(0, 0, 0, 0.95)",
     color: "#ffffff",
     width: "100vw",
     height: "100vh",
@@ -65,26 +68,35 @@ export default function App() {
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    gap: "16px",
-    padding: "16px",
+    gap: "20px",
+    padding: "24px",
     fontFamily: "'Cinzel', Georgia, serif",
   };
 
   if (language === "") {
     return (
       <div style={pageStyle}>
-        <h1 style={{ letterSpacing: "4px", textTransform: "uppercase" }}>Choose Language</h1>
-        <div style={{ display: "flex", gap: "16px" }}>
+        <h1
+          style={{
+            letterSpacing: "6px",
+            textTransform: "uppercase",
+            textShadow: "0 0 20px rgba(220, 38, 38, 0.45)",
+          }}
+        >
+          Choose Language
+        </h1>
+        <div style={{ display: "flex", gap: "18px" }}>
           <button
             onClick={() => pickLanguage("sanskrit")}
             style={{
-              border: "1px solid #666",
-              padding: "10px 20px",
-              background: "#111",
-              color: "#fff",
+              border: "1px solid #7f1d1d",
+              padding: "12px 26px",
+              background: "rgba(20, 8, 8, 0.85)",
+              color: "#fecaca",
               cursor: "pointer",
               fontFamily: "'Cinzel', serif",
-              letterSpacing: "2px",
+              letterSpacing: "3px",
+              boxShadow: "0 0 16px rgba(127, 29, 29, 0.3)",
             }}
           >
             Sanskrit
@@ -92,13 +104,14 @@ export default function App() {
           <button
             onClick={() => pickLanguage("latin")}
             style={{
-              border: "1px solid #666",
-              padding: "10px 20px",
-              background: "#111",
-              color: "#fff",
+              border: "1px solid #7f1d1d",
+              padding: "12px 26px",
+              background: "rgba(20, 8, 8, 0.85)",
+              color: "#fecaca",
               cursor: "pointer",
               fontFamily: "'Cinzel', serif",
-              letterSpacing: "2px",
+              letterSpacing: "3px",
+              boxShadow: "0 0 16px rgba(127, 29, 29, 0.3)",
             }}
           >
             Latin
@@ -134,9 +147,9 @@ export default function App() {
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "center",
-          gap: "28px",
+          gap: "36px",
           width: "100%",
-          maxWidth: "1000px",
+          maxWidth: "1180px",
         }}
       >
         <ManuscriptBox
@@ -147,18 +160,20 @@ export default function App() {
           shouldUnmuteAudio={Boolean(language)}
         />
 
-        <Ghost isJumpscare={isJumpscare} hasGhostVideo={false} />
+        <Ghost isJumpscare={isJumpscare} />
       </div>
 
       <button
         onClick={() => setLanguage("")}
         style={{
-          border: "1px solid #555",
-          padding: "6px 14px",
-          background: "#111",
-          color: "#fff",
+          border: "1px solid #571818",
+          padding: "8px 20px",
+          background: "rgba(18, 8, 8, 0.8)",
+          color: "#fca5a5",
           cursor: "pointer",
           fontFamily: "'Cinzel', serif",
+          letterSpacing: "2px",
+          boxShadow: "0 0 14px rgba(127, 29, 29, 0.25)",
         }}
       >
         Back
