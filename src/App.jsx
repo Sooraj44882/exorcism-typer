@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { sanskritLines, latinLines } from "./words";
 import ManuscriptBox from "./components/ManuscriptBox";
 import Ghost from "./components/Ghost";
@@ -9,6 +9,47 @@ export default function App() {
   const [lineKey, setLineKey] = useState(0);
   const [typedCount, setTypedCount] = useState(0);
   const [isJumpscare, setIsJumpscare] = useState(false);
+  const [soundOn, setSoundOn] = useState(true);
+
+  const ambientRef = useRef(null);
+  const scareRef = useRef(null);
+
+  useEffect(() => {
+    const ambient = new Audio("/ambient.mp3");
+    ambient.loop = true;
+    ambient.volume = 0.35;
+    ambientRef.current = ambient;
+
+    const scare = new Audio("/scare.mp3");
+    scare.volume = 0.85;
+    scareRef.current = scare;
+
+    return () => {
+      ambient.pause();
+      scare.pause();
+    };
+  }, []);
+
+  useEffect(() => {
+    const ambient = ambientRef.current;
+    if (!ambient) return;
+
+    if (soundOn && language !== "") {
+      ambient.play().catch(() => {});
+    } else {
+      ambient.pause();
+    }
+  }, [soundOn, language]);
+
+  function triggerScareSound() {
+    if (!soundOn || !scareRef.current) return;
+    scareRef.current.currentTime = 0;
+    scareRef.current.play().catch(() => {});
+  }
+
+  function handleGhostTouch() {
+    triggerScareSound();
+  }
 
   function loadNewLine(lang) {
     const list = lang === "sanskrit" ? sanskritLines : latinLines;
@@ -43,6 +84,7 @@ export default function App() {
           }, 220);
         }
       } else {
+        triggerScareSound();
         setIsJumpscare(true);
         setTimeout(() => {
           setIsJumpscare(false);
@@ -52,7 +94,7 @@ export default function App() {
 
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
-  }, [currentItem, typedCount, language, isJumpscare]);
+  }, [currentItem, typedCount, language, isJumpscare, soundOn]);
 
   const pageStyle = {
     backgroundColor: "#050505",
@@ -71,11 +113,36 @@ export default function App() {
     gap: "20px",
     padding: "24px",
     fontFamily: "'Cinzel', Georgia, serif",
+    position: "relative",
   };
+
+  const soundButton = (
+    <button
+      onClick={() => setSoundOn((prev) => !prev)}
+      style={{
+        position: "fixed",
+        top: "20px",
+        right: "24px",
+        zIndex: 40,
+        border: soundOn ? "1px solid #991b1b" : "1px solid #444",
+        padding: "8px 16px",
+        background: soundOn ? "rgba(69, 10, 10, 0.75)" : "rgba(18, 18, 18, 0.8)",
+        color: soundOn ? "#fecaca" : "#a3a3a3",
+        cursor: "pointer",
+        fontFamily: "'Cinzel', serif",
+        fontSize: "13px",
+        letterSpacing: "2px",
+        boxShadow: soundOn ? "0 0 14px rgba(220, 38, 38, 0.35)" : "none",
+      }}
+    >
+      {soundOn ? "SOUND: ON" : "SOUND: OFF"}
+    </button>
+  );
 
   if (language === "") {
     return (
       <div style={pageStyle}>
+        {soundButton}
         <h1
           style={{
             letterSpacing: "6px",
@@ -123,6 +190,8 @@ export default function App() {
 
   return (
     <div style={pageStyle}>
+      {soundButton}
+
       {isJumpscare && (
         <div
           style={{
@@ -157,10 +226,9 @@ export default function App() {
           lineKey={lineKey}
           typedCount={typedCount}
           isJumpscare={isJumpscare}
-          shouldUnmuteAudio={Boolean(language)}
         />
 
-        <Ghost isJumpscare={isJumpscare} />
+        <Ghost isJumpscare={isJumpscare} onGhostTouch={handleGhostTouch} />
       </div>
 
       <button

@@ -51,9 +51,10 @@ function GhostModel({ isJumpscare }) {
 
 useGLTF.preload("/ghost.glb");
 
-export default function Ghost({ isJumpscare }) {
+export default function Ghost({ isJumpscare, onGhostTouch }) {
   return (
     <div
+      onMouseEnter={onGhostTouch}
       style={{
         width: "340px",
         height: "440px",
@@ -61,6 +62,7 @@ export default function Ghost({ isJumpscare }) {
         position: "relative",
         borderRadius: "20px",
         overflow: "visible",
+        cursor: "pointer",
         background:
           "radial-gradient(circle at 50% 42%, rgba(153, 27, 27, 0.34) 0%, rgba(45, 10, 10, 0.22) 48%, rgba(5, 5, 5, 0) 75%)",
       }}

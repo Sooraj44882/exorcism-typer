@@ -1,4 +1,3 @@
-import { useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 
 export default function ManuscriptBox({
@@ -6,22 +5,7 @@ export default function ManuscriptBox({
   lineKey,
   typedCount,
   isJumpscare,
-  shouldUnmuteAudio,
 }) {
-  const paperVideoRef = useRef(null);
-
-  useEffect(() => {
-    if (!shouldUnmuteAudio || !paperVideoRef.current) return;
-
-    const timer = setTimeout(() => {
-      paperVideoRef.current.muted = false;
-      paperVideoRef.current.volume = 0.5;
-      paperVideoRef.current.play().catch(() => {});
-    }, 50);
-
-    return () => clearTimeout(timer);
-  }, [shouldUnmuteAudio]);
-
   const words = currentItem ? currentItem.line.split(" ") : [];
   const wordEntries = words.map((word, wordIdx) => {
     const prevChars = words
@@ -47,7 +31,6 @@ export default function ManuscriptBox({
       }}
     >
       <video
-        ref={paperVideoRef}
         src="/paper.webm"
         autoPlay
         loop
@@ -80,18 +63,18 @@ export default function ManuscriptBox({
             >
               {currentItem.native && (
                 <p
-                    style={{
+                  style={{
                     fontFamily: "'Tiro Devanagari Sanskrit', serif",
                     fontSize: "24px",
                     color: "#6b0f0f",
                     fontWeight: "700",
                     marginBottom: "10px",
                     letterSpacing: "1px",
-                    }}
+                  }}
                 >
-                    {currentItem.native}
+                  {currentItem.native}
                 </p>
-                )}
+              )}
 
               <p
                 style={{
@@ -171,17 +154,17 @@ export default function ManuscriptBox({
                 })}
               </p>
 
-                <p
+              <p
                 style={{
-                    fontFamily: "'Special Elite', monospace",
-                    fontSize: "15px",
-                    color: "#292524",
-                    fontWeight: "600",
-                    marginTop: "14px",
+                  fontFamily: "'Special Elite', monospace",
+                  fontSize: "15px",
+                  color: "#292524",
+                  fontWeight: "600",
+                  marginTop: "14px",
                 }}
-                >
+              >
                 {currentItem.meaning}
-                </p>
+              </p>
             </motion.div>
           )}
         </AnimatePresence>
