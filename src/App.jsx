@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { motion } from "motion/react";
 import { sanskritLines, latinLines } from "./words";
 import ManuscriptBox from "./components/ManuscriptBox";
 import Ghost from "./components/Ghost";
@@ -41,23 +42,23 @@ export default function App() {
     }
   }, [soundOn, language]);
 
-  function triggerScareSound() {
+  const triggerScareSound = useCallback(() => {
     if (!soundOn || !scareRef.current) return;
     scareRef.current.currentTime = 0;
     scareRef.current.play().catch(() => {});
-  }
+  }, [soundOn]);
 
-  function handleGhostTouch() {
+  const handleGhostTouch = useCallback(() => {
     triggerScareSound();
-  }
+  }, [triggerScareSound]);
 
-  function loadNewLine(lang) {
+  const loadNewLine = useCallback((lang) => {
     const list = lang === "sanskrit" ? sanskritLines : latinLines;
     const randomIndex = Math.floor(Math.random() * list.length);
     setCurrentItem(list[randomIndex]);
     setTypedCount(0);
     setLineKey((prev) => prev + 1);
-  }
+  }, []);
 
   function pickLanguage(lang) {
     setLanguage(lang);
@@ -94,13 +95,10 @@ export default function App() {
 
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
-  }, [currentItem, typedCount, language, isJumpscare, soundOn]);
+  }, [currentItem, typedCount, language, isJumpscare, triggerScareSound, loadNewLine]);
 
   const pageStyle = {
     backgroundColor: "#050505",
-    backgroundImage:
-      "radial-gradient(circle at 50% 48%, rgba(88, 12, 12, 0.24) 0%, rgba(18, 6, 6, 0.65) 48%, #030303 92%)",
-    boxShadow: "inset 0 0 140px rgba(0, 0, 0, 0.95)",
     color: "#ffffff",
     width: "100vw",
     height: "100vh",
@@ -110,10 +108,20 @@ export default function App() {
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    gap: "20px",
+    gap: "18px",
     padding: "24px",
     fontFamily: "'Cinzel', Georgia, serif",
     position: "relative",
+  };
+
+  const buttonStyle = {
+    border: "1px solid #555555",
+    padding: "10px 22px",
+    backgroundColor: "#111111",
+    color: "#ffffff",
+    cursor: "pointer",
+    fontFamily: "'Cinzel', serif",
+    letterSpacing: "2px",
   };
 
   const soundButton = (
@@ -124,18 +132,17 @@ export default function App() {
         top: "20px",
         right: "24px",
         zIndex: 40,
-        border: soundOn ? "1px solid #991b1b" : "1px solid #444",
-        padding: "8px 16px",
-        background: soundOn ? "rgba(69, 10, 10, 0.75)" : "rgba(18, 18, 18, 0.8)",
-        color: soundOn ? "#fecaca" : "#a3a3a3",
+        border: "1px solid #555555",
+        padding: "8px 14px",
+        backgroundColor: "#111111",
+        color: soundOn ? "#ffffff" : "#999999",
         cursor: "pointer",
         fontFamily: "'Cinzel', serif",
-        fontSize: "13px",
+        fontSize: "12px",
         letterSpacing: "2px",
-        boxShadow: soundOn ? "0 0 14px rgba(220, 38, 38, 0.35)" : "none",
       }}
     >
-      {soundOn ? "SOUND: ON" : "SOUND: OFF"}
+      {soundOn ? "Sound: On" : "Sound: Off"}
     </button>
   );
 
@@ -143,44 +150,14 @@ export default function App() {
     return (
       <div style={pageStyle}>
         {soundButton}
-        <h1
-          style={{
-            letterSpacing: "6px",
-            textTransform: "uppercase",
-            textShadow: "0 0 20px rgba(220, 38, 38, 0.45)",
-          }}
-        >
+        <h1 style={{ letterSpacing: "4px", textTransform: "uppercase", margin: 0 }}>
           Choose Language
         </h1>
-        <div style={{ display: "flex", gap: "18px" }}>
-          <button
-            onClick={() => pickLanguage("sanskrit")}
-            style={{
-              border: "1px solid #7f1d1d",
-              padding: "12px 26px",
-              background: "rgba(20, 8, 8, 0.85)",
-              color: "#fecaca",
-              cursor: "pointer",
-              fontFamily: "'Cinzel', serif",
-              letterSpacing: "3px",
-              boxShadow: "0 0 16px rgba(127, 29, 29, 0.3)",
-            }}
-          >
+        <div style={{ display: "flex", gap: "16px" }}>
+          <button onClick={() => pickLanguage("sanskrit")} style={buttonStyle}>
             Sanskrit
           </button>
-          <button
-            onClick={() => pickLanguage("latin")}
-            style={{
-              border: "1px solid #7f1d1d",
-              padding: "12px 26px",
-              background: "rgba(20, 8, 8, 0.85)",
-              color: "#fecaca",
-              cursor: "pointer",
-              fontFamily: "'Cinzel', serif",
-              letterSpacing: "3px",
-              boxShadow: "0 0 16px rgba(127, 29, 29, 0.3)",
-            }}
-          >
+          <button onClick={() => pickLanguage("latin")} style={buttonStyle}>
             Latin
           </button>
         </div>
@@ -197,16 +174,45 @@ export default function App() {
           style={{
             position: "fixed",
             inset: 0,
-            backgroundColor: "rgba(69, 10, 10, 0.92)",
+            backgroundColor: "rgba(55, 5, 5, 0.94)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             zIndex: 50,
+            pointerEvents: "none",
+            overflow: "hidden",
           }}
         >
-          <div style={{ border: "3px solid #ef4444", backgroundColor: "#000", padding: "40px", textAlign: "center" }}>
-            <p style={{ color: "#ef4444", fontSize: "24px", fontWeight: "bold" }}>[ JUMPSCARE FACE HERE ]</p>
-          </div>
+          <motion.div
+            initial={{ scale: 0.75, opacity: 0.4 }}
+            animate={{
+              scale: [0.85, 1.16, 0.98, 1.1, 1],
+              x: [-18, 18, -14, 14, -8, 8, 0],
+              y: [-10, 12, -12, 8, 0],
+              opacity: 1,
+            }}
+            transition={{ duration: 0.45, ease: "easeOut" }}
+            style={{
+              width: "min(85vw, 680px)",
+              height: "min(80vh, 620px)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              position: "relative",
+            }}
+          >
+            <img
+              src="/jump.webp"
+              alt="Jumpscare"
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "contain",
+                filter:
+                  "contrast(1.35) saturate(1.2) drop-shadow(0 0 36px rgba(239, 68, 68, 0.85))",
+              }}
+            />
+          </motion.div>
         </div>
       )}
 
@@ -234,14 +240,9 @@ export default function App() {
       <button
         onClick={() => setLanguage("")}
         style={{
-          border: "1px solid #571818",
-          padding: "8px 20px",
-          background: "rgba(18, 8, 8, 0.8)",
-          color: "#fca5a5",
-          cursor: "pointer",
-          fontFamily: "'Cinzel', serif",
-          letterSpacing: "2px",
-          boxShadow: "0 0 14px rgba(127, 29, 29, 0.25)",
+          ...buttonStyle,
+          padding: "7px 16px",
+          fontSize: "13px",
         }}
       >
         Back
