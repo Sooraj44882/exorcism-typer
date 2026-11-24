@@ -5,6 +5,7 @@ import ManuscriptBox from "./components/ManuscriptBox";
 import Ghost from "./components/Ghost";
 import DifficultyTimer from "./components/DifficultyTimer";
 import { DIFFICULTY_CONFIG } from "./difficultyConfig";
+import DisclaimerModal from "./components/DisclaimerModal";
 
 export default function App() {
   const [language, setLanguage] = useState("");
@@ -12,6 +13,7 @@ export default function App() {
   const [timeLeft, setTimeLeft] = useState(0);
   const [completedCount, setCompletedCount] = useState(0);
   const [outcome, setOutcome] = useState("");
+  const [showDisclaimer, setShowDisclaimer] = useState(false);
 
   const [currentItem, setCurrentItem] = useState(null);
   const [lineKey, setLineKey] = useState(0);
@@ -182,6 +184,12 @@ export default function App() {
         {soundOn ? "Sound: On" : "Sound: Off"}
       </button>
 
+      <DisclaimerModal
+        isOpen={showDisclaimer}
+        onClose={() => setShowDisclaimer(false)}
+        buttonStyle={buttonStyle}
+      />
+
       {language === "" ? (
         <>
           <h1 style={{ letterSpacing: "4px", textTransform: "uppercase", margin: 0 }}>
@@ -193,6 +201,45 @@ export default function App() {
             </button>
             <button onClick={() => { setLanguage("latin"); setDifficulty(""); setOutcome(""); }} style={buttonStyle}>
               Latin
+            </button>
+          </div>
+
+          <div
+            style={{
+              position: "fixed",
+              bottom: "20px",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: "8px",
+            }}
+          >
+            <p
+              style={{
+                margin: 0,
+                fontSize: "11px",
+                letterSpacing: "1px",
+                color: "#888888",
+                textAlign: "center",
+              }}
+            >
+              Fictional game only • We respect all religions & languages
+            </p>
+            <button
+              onClick={() => setShowDisclaimer(true)}
+              style={{
+                background: "transparent",
+                border: "none",
+                borderBottom: "1px solid #666666",
+                color: "#bbbbbb",
+                cursor: "pointer",
+                fontFamily: "'Cinzel', serif",
+                fontSize: "11px",
+                letterSpacing: "2px",
+                padding: "2px 4px",
+              }}
+            >
+              Disclaimer
             </button>
           </div>
         </>
