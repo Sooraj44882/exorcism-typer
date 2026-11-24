@@ -30,10 +30,12 @@ export default function App() {
   useEffect(() => {
     const ambient = new Audio("/ambient.mp3");
     ambient.loop = true;
+    ambient.preload = "auto";
     ambientRef.current = ambient;
 
     const scare = new Audio("/scare.mp3");
     scare.volume = 0.85;
+    scare.preload = "auto";
     scareRef.current = scare;
 
     return () => {
