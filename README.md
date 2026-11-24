@@ -1,16 +1,65 @@
-# React + Vite
+## Disclaimer & Respect Notice
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This game is a work of fiction created purely for entertainment a horror game . I deeply respect all religions, cultures, sacred traditions and languages including Sanskrit and Latin. No sacred names,chants are misused and there is zero intention to hurt, disrespect or misrepresent any faith or linguistic heritage.
 
-Currently, two official plugins are available:
+# Exorcism Typer
+![alt text](pic/image3.png)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+**Exorcism Typer** . It is a horror themed typing game where you pick Sanskrit or Latin mantra or chants , choose a difficulty level, and try to finish typing all the mantra before the timer runs out and ghost kill you.
 
-## React Compiler
+## Demo 
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+**Link:** 
 
-## Expanding the ESLint configuration
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+
+## Tech Stack & How It Was Made
+
+I built this project using
+- **React** and **Vite** for the frontend.
+- **Three.js** with `@react-three/fiber` and `@react-three/drei` to render the 3D ghost model
+- **Motion** (`motion/react`) for text animations and jumpscare shakes
+
+### Features
+
+- **2 Language:** Sanskrit and Latin 
+![alt text](pic/image-1.png)
+
+- **Typing & Manuscript Box:** Built character by character typing detection for Sanskrit and Latin lines over a  `paper.webm` burning-parchment video background.
+
+- **3D Ghost Framing & Lighting:** The 3D model of ghost and tuned the rim and crimson red color lighting.
+
+- **Audio System:** Added a Sound On/Off toggle button, a looping ambient background track whose volume scales with difficulty and a separate scare sound effect triggered when mistyping or touching the ghost with the cursor.
+
+- **Difficulty Timer & Win/Lose Flow:** Added Easy (2 min / 10 chants), Medium (1 min / 6 chants) and Hard (1 min / 10 chants) modes showing remaining chants. Completing all chants you exorsit the ghost and win game, while running out of time not completing the chant result in lose 
+
+- **Text Animation:** using motion made text animation.
+
+
+## How to Run Locally
+
+1. Clone the repository and open the folder:
+   ```bash
+   git clone https://github.com/Sooraj44882/exorcism-typer.git
+   cd exorcism-typer
+   ```
+
+2. Install the dependencies:
+   ```bash
+   npm install
+   ```
+
+4. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+
+
+## AI Disclosure
+
+AI was used only to write the mantras and chants. I do not know the languages & it meaning.Instead of taking from real with god name and others stuff .I wanted to avoid hurting anyone beliefs so I used AI to make  with native script and meaning  without any god names or sacred text.
+
+I only made this words.jsx file only with AI .And all other stuff is made by me .
+![alt text](pic/image.png)
+
